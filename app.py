@@ -47,25 +47,22 @@ def read_text(fname):
 
 def show_about():
 	''' Home / About page '''
-	st.title('About Home Equity Line of Credit (HELOC) applications decision support system')
+	st.title('Welcome to Home Equity Line of Credit Decision Support System')
 	for line in read_text('about.txt'): #何总上传这部分的文本文件
 		st.write(line)
 
 @st.cache(show_spinner = False)
 def get_file_content_as_string():
 	''' Download a single file and make its content available as a string. '''
-	url = 'https://raw.githubusercontent.com/zacheberhart/Learning-to-Feel/master/src/app.py'
+	url = 'https://raw.githubusercontent.com/yaliu0703/DecisionSupportSystem/master/app.py'
 	response = urllib.request.urlopen(url)
 	return response.read().decode("utf-8")
 
 ##################################################################################
 #                                                                                #
 # Start Evaluation                                                               #
-# ::: Allow the user to pick one or more labels to get a list of the top songs   #
-# ::: classified with the respective label(s). Limit the list of songs returned  #
-# ::: to 100, but allow the user to choose the quantity and the "Popularity", a  #
-# ::: a metric provided by Spotify's API. Also allow the user to leave the app   #
-# ::: and listen to the song on Spotify's Web App using the provided link.       #
+# ::: Allow the user to pick one row from dataset and evaluate                   #
+# ::: and show interpretation                                                    #
 #                                                                                #
 ##################################################################################
 
@@ -75,11 +72,12 @@ def explore_classified():
 	# Text on Evaluation page 
 	st.title('Home Equity Line of Credit (HELOC) applications decision support system')
 	st.write('''
-		1. User choose one row record from existing FICO credit report dataset
-		2. User may customize the data if he wants to
-		3. When user clicks the checkbox "Show evaluation result", the prediction result, explaination and graph will be shown
-		#何总会负责这部分的文字润色
+		1. You may choose one row from dataset or input data manually;
+		2. Click the checkbox "Show evaluation result" to get prediction result and interpretation
 		
+		Interpretation:
+		1. Good: The likelihood of repayment is predicted to be high. A loan or a credit card application could be approved.
+		2. Bad: The likelihood of repayment is predicted to be low. A loan or a credit card application should be turned down. Rejection Reasons that cause the result are provided to help applicant improve.
 	''')
 
 	# Step 1:User chooses one row record from existing FICO credit report dataset
@@ -133,16 +131,9 @@ def show_evaluation(pred,newdata):
             evaluation[colname] = poss
         list1= sorted(evaluation.items(),key=lambda x:x[1])
         notgood = []
-        for i in range(3):
-            colname = list1[i][0]
-            #significant = abs(float(newdata[colname][0]) - trainstandard[colname][0]) > 0.5*trainstandard[colname][1]
-            notgood.append(colname)
-            problem = ','.join(notgood)
-        if len(notgood) > 0:        
-            st.write('The customer is not so reliable because the person has bad',problem,'.')
-        else:
-            st.write('Some expert should look at the person data.')
-
+        problem = ','.join(notgood)        
+        st.write('The customer is not so reliable because the person has bad' + problem + '. It shows that historical credit records of the person is of problem.')
+        
         #how to use (-7,-8,-9)
     else:
         missingvalue = []
@@ -153,7 +144,7 @@ def show_evaluation(pred,newdata):
             if len(people) > 0:
                 missingvalue.append(colname)
         if len(missingvalue) > 0:
-            st.text('It is risky to allow the person to apply large number of loan.Because the person does not have enough historical data. So it is not sure about the risk.')
+            st.text('It is risky to allow the person to apply large number of loan.Because the person does not have enough historical data，which shows that the person just start to use credit. This kind of people are positive at repaying the loan. However there is still som uncertainty. So it is not sure about the risk.')
                 
 
 
