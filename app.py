@@ -48,7 +48,7 @@ def read_text(fname):
 def show_about():
 	''' Home / About page '''
 	st.title('Welcome to Home Equity Line of Credit Decision Support System')
-	for line in read_text('about.txt'): #何总上传这部分的文本文件
+	for line in read_text('about.txt'):
 		st.write(line)
 
 @st.cache(show_spinner = False)
@@ -131,8 +131,11 @@ def show_evaluation(pred,newdata):
             evaluation[colname] = poss
         list1= sorted(evaluation.items(),key=lambda x:x[1])
         notgood = []
-        problem = ','.join(notgood)        
-        st.write('The customer is not so reliable because the person has bad' + problem + '. It shows that historical credit records of the person is of problem.')
+        for i in range(3):
+        	notgood.append(list1[i][0])
+        problem = ','.join(notgood)   
+        st.write('The customer is not so reliable because the person has bad',problem,".")
+        st.write('It shows that historical credit records of the person is problematic.')
         
         #how to use (-7,-8,-9)
     else:
@@ -159,20 +162,20 @@ def get_input(index):
 
     # Create input variables for evaluation please use these variables for evaluation
     
-    ExternalRiskEstimate = st.sidebar.slider('External Risk Estimate', 1.0, 100.0, float(values[0]))
+    ExternalRiskEstimate = st.sidebar.slider('External Risk Estimate', -10.0, 100.0, float(values[0]))
     MSinceOldestTradeOpen = st.sidebar.text_input('Months Since Oldest Trade Open:', values[1])
     MSinceMostRecentTradeOpen = st.sidebar.text_input('Months Since Most Recent Trade Open:', values[2])
     AverageMInFile = st.sidebar.text_input('Average Months in File:', values[3])
     NumSatisfactoryTrades = st.sidebar.text_input('Number of Satisfactory Trades:', values[4])
     NumTrades60Ever2DerogPubRec = st.sidebar.text_input('the number of trade lines on a credit bureau report that record a payment received 60 days past its due date:', values[5])
     NumTrades90Ever2DerogPubRec = st.sidebar.text_input('the number of trade lines on a credit bureau report that record a payment received 90 days past its due date:', values[6])
-    PercentTradesNeverDelq = st.sidebar.slider('Percent of Trades Never Delinquent', 0.0, 100.0, float(values[7]))
+    PercentTradesNeverDelq = st.sidebar.slider('Percent of Trades Never Delinquent',-10.0, 100.0, float(values[7]))
     MSinceMostRecentDelq = st.sidebar.text_input('Months Since Most Recent Delinquency', values[8])
-    MaxDelq2PublicRecLast12M = st.sidebar.slider('Max Deliquncy on Public Records Last 12 Months:', 0.0, 9.0, float(values[9]))
-    MaxDelqEver = st.sidebar.slider('Max Deliquncy Ever:', 1.0, 9.0, float(values[10]))
+    MaxDelq2PublicRecLast12M = st.sidebar.slider('Max Deliquncy on Public Records Last 12 Months:', -10.0, 9.0, float(values[9]))
+    MaxDelqEver = st.sidebar.slider('Max Deliquncy Ever:', -10.0, 9.0, float(values[10]))
     NumTotalTrades = st.sidebar.text_input('Number of Total Trades', values[11],4)
     NumTradesOpeninLast12M = st.sidebar.text_input('Number of Trades Open in Last 12 Months', values[12],4)
-    PercentInstallTrades = st.sidebar.slider('Percent of Installment Trades', 0.0, 100.0, float(values[13]))
+    PercentInstallTrades = st.sidebar.slider('Percent of Installment Trades', -10.0, 100.0, float(values[13]))
     MSinceMostRecentInqexcl7days = st.sidebar.text_input('Months Since Most Recent Inq excl 7days:', values[14])
     NumInqLast6M = st.sidebar.text_input('Number of Inq Last 6 Months:', values[15])
     NumInqLast6Mexcl7days = st.sidebar.text_input('Number of Inq Last 6 Months excl 7days. Excluding the last 7 days removes inquiries that are likely due to price comparision shopping.:', values[16])
@@ -181,7 +184,7 @@ def get_input(index):
     NumRevolvingTradesWBalance = st.sidebar.text_input('Number Revolving Trades with Balance:', values[19])
     NumInstallTradesWBalance = st.sidebar.text_input('Number Installment Trades with Balance:', values[20])
     NumBank2NatlTradesWHighUtilization = st.sidebar.text_input('Number Bank/Natl Trades w high utilization ratio:', values[21])
-    PercentTradesWBalance = st.sidebar.slider('Percent Trades with Balance:', 0.0, 100.0, float(values[22]))
+    PercentTradesWBalance = st.sidebar.slider('Percent Trades with Balance:', -10.0, 100.0, float(values[22]))
     
     newdata = pd.DataFrame()
     newdata = newdata.append({'ExternalRiskEstimate':ExternalRiskEstimate,

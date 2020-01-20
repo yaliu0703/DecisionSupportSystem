@@ -1,0 +1,19 @@
+The system is designed to evaluate the risk performance of credit card applicant, providing decision support for bank manager. Even if you do not have very technical background, you may feel free to use it.
+
+In this system, you may select two main functions on the left side of menu bar:
+
+1. Start evaluation
+Main body of the system where you may evaluate the risk performance of selected applicant. The system will predict the risk performance with a model which has an accuracy of 72% and provide corresponding interpretation.
+
+2. Show Source Code
+It shows code to system maintanence person.
+
+
+
+This system is developed by:
+
+Yingyuan He yingyuan.he@simon.rochester.edu
+Ya Liu ya.liu1@simon.rochester.edu
+Mingwei Tu mingwei.tu@simon.rochester.edu
+Yuchen Yao yuchen.yao@simon.rochester.edu
+Bojian Zhang bojian.zhang@simon.rochester.edu
