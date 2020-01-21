@@ -90,6 +90,22 @@ This section provides brief introduction of prediction goal and 2 other sections
 Since default value for sidebar is “about”, main() will call show_about() automatically. show_about() will call read_text() to write “about.txt” on the screen.
 
 
+```javascript
+@st.cache(show_spinner = False)
+def read_text(fname):
+	''' Display copy from a .txt file. '''
+	with open(fname, 'r') as f:
+		text = f.readlines()
+	return text
+
+
+def show_about():
+	''' Home / About page '''
+	st.title('Welcome to Home Equity Line of Credit Decision Support System')
+	for line in read_text('about.txt'):
+		st.write(line)
+
+```
 
 
 
@@ -106,15 +122,119 @@ There are three steps for using this system. Firstly, users choose data from dat
 #### 3.2.2 Technical realization 
 Since default value for sidebar is “about”, main() will call show_about() automatically. show_about() will call read_text() to write “about.txt” on the screen.
 
+```javascript
+def explore_classified():
+
+	
+	# Text on Evaluation page 
+	st.title('Home Equity Line of Credit (HELOC) applications decision support system')
+	st.write('''
+		1. You may choose one row from dataset or input data manually;
+		2. Click the checkbox "Show evaluation result" to get prediction result and interpretation
+		
+		Interpretation:
+		1. Good: The likelihood of repayment is predicted to be high. A loan or a credit card application could be approved.
+		2. Bad: The likelihood of repayment is predicted to be low. A loan or a credit card application should be turned down. Rejection Reasons that cause the result are provided to help applicant improve.
+	''')
+
+	# Step 1:User chooses one row record from existing FICO credit report dataset
+	if st.checkbox('Check here to see existing credit report'):
+		st.write(X_test)
+	number = st.text_input('Choose a row in credit report for evaluation (0~2029):', 0)  # Input the index number
+	
+	# Step 2:Get user input
+	newdata = get_input(int(number))
+	
+	# Step 3: when user checks, run model
+	if st.checkbox('Show evaluation result'):
+		run_model(newdata)
+```
+
 explore_classified() will call following functions conditionally:
 
 ##### 3.2.2.1 get_input()
 
 get_input() provides sidebar and records data users input or choose from dataset.
 
+```javascript
+def get_input(index):
+    
+    values = X_test_df.iloc[index]  # Input the value from dataset
+
+    # Create input variables for evaluation please use these variables for evaluation
+    
+    ExternalRiskEstimate = st.sidebar.slider('External Risk Estimate', -10.0, 100.0, float(values[0]))
+    MSinceOldestTradeOpen = st.sidebar.text_input('Months Since Oldest Trade Open:', values[1])
+    MSinceMostRecentTradeOpen = st.sidebar.text_input('Months Since Most Recent Trade Open:', values[2])
+    AverageMInFile = st.sidebar.text_input('Average Months in File:', values[3])
+    NumSatisfactoryTrades = st.sidebar.text_input('Number of Satisfactory Trades:', values[4])
+    NumTrades60Ever2DerogPubRec = st.sidebar.text_input('the number of trade lines on a credit bureau report that record a payment received 60 days past its due date:', values[5])
+    NumTrades90Ever2DerogPubRec = st.sidebar.text_input('the number of trade lines on a credit bureau report that record a payment received 90 days past its due date:', values[6])
+    PercentTradesNeverDelq = st.sidebar.slider('Percent of Trades Never Delinquent',-10.0, 100.0, float(values[7]))
+    MSinceMostRecentDelq = st.sidebar.text_input('Months Since Most Recent Delinquency', values[8])
+    MaxDelq2PublicRecLast12M = st.sidebar.slider('Max Deliquncy on Public Records Last 12 Months:', -10.0, 9.0, float(values[9]))
+    MaxDelqEver = st.sidebar.slider('Max Deliquncy Ever:', -10.0, 9.0, float(values[10]))
+    NumTotalTrades = st.sidebar.text_input('Number of Total Trades', values[11],4)
+    NumTradesOpeninLast12M = st.sidebar.text_input('Number of Trades Open in Last 12 Months', values[12],4)
+    PercentInstallTrades = st.sidebar.slider('Percent of Installment Trades', -10.0, 100.0, float(values[13]))
+    MSinceMostRecentInqexcl7days = st.sidebar.text_input('Months Since Most Recent Inq excl 7days:', values[14])
+    NumInqLast6M = st.sidebar.text_input('Number of Inq Last 6 Months:', values[15])
+    NumInqLast6Mexcl7days = st.sidebar.text_input('Number of Inq Last 6 Months excl 7days. Excluding the last 7 days removes inquiries that are likely due to price comparision shopping.:', values[16])
+    NetFractionRevolvingBurden = st.sidebar.text_input('Net Fraction Revolving Burden:', values[17])
+    NetFractionInstallBurden = st.sidebar.text_input('Net Fraction Installment Burden:', values[18])
+    NumRevolvingTradesWBalance = st.sidebar.text_input('Number Revolving Trades with Balance:', values[19])
+    NumInstallTradesWBalance = st.sidebar.text_input('Number Installment Trades with Balance:', values[20])
+    NumBank2NatlTradesWHighUtilization = st.sidebar.text_input('Number Bank/Natl Trades w high utilization ratio:', values[21])
+    PercentTradesWBalance = st.sidebar.slider('Percent Trades with Balance:', -10.0, 100.0, float(values[22]))
+    
+    newdata = pd.DataFrame()
+    newdata = newdata.append({'ExternalRiskEstimate':ExternalRiskEstimate,
+            'MSinceOldestTradeOpen':MSinceOldestTradeOpen,
+            'MSinceMostRecentTradeOpen':MSinceMostRecentTradeOpen,
+            'AverageMInFile':AverageMInFile, 
+            'NumSatisfactoryTrades':NumSatisfactoryTrades,
+            'NumTrades60Ever2DerogPubRec':NumTrades60Ever2DerogPubRec,
+            'NumTrades90Ever2DerogPubRec':NumTrades90Ever2DerogPubRec,
+            'PercentTradesNeverDelq':PercentTradesNeverDelq,
+            'MSinceMostRecentDelq':MSinceMostRecentDelq,
+            'MaxDelq2PublicRecLast12M':MaxDelq2PublicRecLast12M,
+            'MaxDelqEver':MaxDelqEver,
+            'NumTotalTrades':NumTotalTrades,
+            "NumTradesOpeninLast12M": NumTradesOpeninLast12M,
+            'MaxDelq2PublicRecLast12M':MaxDelq2PublicRecLast12M,
+            'PercentInstallTrades':PercentInstallTrades,
+            'MSinceMostRecentInqexcl7days':MSinceMostRecentInqexcl7days, 
+            'NumInqLast6M':NumInqLast6M,
+            'NumInqLast6Mexcl7days':NumInqLast6Mexcl7days,
+            'NetFractionRevolvingBurden':NetFractionRevolvingBurden, 
+            'NetFractionInstallBurden':NetFractionInstallBurden,
+            'NumRevolvingTradesWBalance':NumRevolvingTradesWBalance,
+            'NumInstallTradesWBalance':NumInstallTradesWBalance,
+            'NumBank2NatlTradesWHighUtilization':NumBank2NatlTradesWHighUtilization,
+            'PercentTradesWBalance':PercentTradesWBalance},ignore_index=True)
+    
+    
+    return newdata
+```
+
 ##### 3.2.2.2 run_model()
 
 run_model() will get data from get_input() and use input data to run model which performs best in our training.
+
+```javascript
+def run_model(newdata):
+    BestBg = BaggingClassifier(base_estimator=svm.SVC(C=1, cache_size=200, class_weight=None, coef0=0.0, decision_function_shape='ovr', 
+    degree=3, gamma='auto_deprecated', kernel='rbf', max_iter=-1, probability=False, random_state=1, shrinking=True, tol=0.001, verbose=False), 
+    bootstrap=True, bootstrap_features=False, max_features=0.6, max_samples=0.3, n_estimators=50, n_jobs=None, oob_score=False, random_state=None, 
+    verbose=0, warm_start=False)
+    BestBg.fit(X_train_df, y_train_df)
+    pred = BestBg.predict(newdata)
+    if pred[0] == 1:
+        st.text("Risk performance is Good")
+    else:
+        st.text("Risk performance is Bad")
+    show_evaluation(pred,newdata)
+```
 
 ##### 3.2.2.3 show_evaluation()
 
