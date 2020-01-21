@@ -244,6 +244,52 @@ When result is 1， which means ‘Good’, the likelihood of repayment is predi
 
 When result is ‘Bad’, the likelihood of repayment is predicted to be low. A loan or a credit card application should be turned down. To find the reason that cause these people to be refused from loan or credit, we need to use information about standard normal distribution. First, we calculate the mean and standard deviation of each variable in the training set. Then we compute the possibility of X<predict value, which is Pr(X < x), to quantify how far our tobe-estimated term is from the population mean. If Pr(X < x) > 0.5, Pr(X < x) = 1 - Pr(X < x). Then we choose the first far variables and detect whether they are more than 2 standard deviation from the mean, which is the data center. However, in running the code we find that most values, even those belonging to ‘Bad’ people, are still within 2 standard deviation of mean. So we only use the possibility, and choose the first three to be the reason why these people is predicted to have low likelihood of repayment. Reasons that cause the result are provided to help applicants improve their financial status.
 
+```javascript
+def show_evaluation(pred,newdata):
+	    	
+	#find the mean and std
+    trainstandard = {}
+
+    for colname in list(X_train_df):
+        num = []
+        mean = np.mean(X_train_df[colname])
+        std = np.std(list(X_train_df[colname]))
+        num.append(mean)
+        num.append(std)
+        trainstandard[colname] = num
+
+    #find the possibility of the variable value in standard distribution
+    evaluation = {} 
+
+    from scipy.stats import norm
+
+    if pred[0] == 0:
+        for colname in list(X_train_df):
+            poss = norm.cdf(X_train_df[colname][0], loc=trainstandard[colname][0], scale = trainstandard[colname][1])
+            if poss > 0.5:
+                poss = 1 - poss
+            evaluation[colname] = poss
+        list1= sorted(evaluation.items(),key=lambda x:x[1])
+        notgood = []
+        for i in range(3):
+        	notgood.append(list1[i][0])
+        problem = ','.join(notgood)   
+        st.write('The customer is not so reliable because the person has bad',problem,".")
+        st.write('It shows that historical credit records of the person is problematic.')
+        
+        #how to use (-7,-8,-9)
+    else:
+        missingvalue = []
+        for colname in list(X_train_df):
+            arr = np.arange(len(newdata.index))
+            judge = newdata[colname].isin([-7,-8,-9])
+            people = list(arr[judge])
+            if len(people) > 0:
+                missingvalue.append(colname)
+        if len(missingvalue) > 0:
+            st.text('It is risky to allow the person to apply large number of loan.Because the person does not have enough historical data，which shows that the person just start to use credit. This kind of people are positive at repaying the loan. However there is still som uncertainty. So it is not sure about the risk.')
+```
+
 ### 3.3 Show Source Code
 
 <img src="img/interface 3rd section.png"/>
@@ -256,36 +302,19 @@ This section prints source code of program as a reference to users with technica
 
 After calling get_file_content_as_string(), it will use urllib.request.urlopen(url) to download the raw code we uploaded and make its content available as a string.
 
-
-
-
-
-
-
-
-
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. 
-
 ```javascript
-if (isAwesome){
-  return true
-}
+@st.cache(show_spinner = False)
+def get_file_content_as_string():
+	''' Download a single file and make its content available as a string. '''
+	url = 'https://raw.githubusercontent.com/yaliu0703/DecisionSupportSystem/master/app.py'
+	response = urllib.request.urlopen(url)
+	return response.read().decode("utf-8")
 ```
 
-### 2. Assess assumptions on which statistical inference will be based
 
-```javascript
-if (isAwesome){
-  return true
-}
-```
 
-### 3. Support the selection of appropriate statistical tools and techniques
 
-<img src="images/dummy_thumbnail.jpg?raw=true"/>
 
-### 4. Provide a basis for further data collection through surveys or experiments
 
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. 
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+
