@@ -38,8 +38,8 @@ In order to further improve our accuracy, we then applied the aggregation method
 
 The following table shows the best estimator, CV score and accuracy of each model we have trained.
 
-![image](img/model selection table.png)
-![image](img/Bootstrap model selection table.png)
+<img src="img/model selection table.png"/>
+<img src="img/Bootstrap model selection table.png"/>
 
 ## 3.Interactive interface design
 
@@ -47,6 +47,8 @@ The interface includes three sections on the left side of menu bar: About, Start
 
 ![image](img/code logic flow.png)
 ![image](img/interface index.png)
+
+
 
 ```javascript
 if __name__ == "__main__":
@@ -94,8 +96,8 @@ Since default value for sidebar is “about”, main() will call show_about() au
 
 ### 3.2 Start Evaluation
 
-![image](img/interface 2nd section bad result.png)
-![image](img/interface 2nd section good result.png)
+<img src="img/interface 2nd section bad result.png"/>
+<img src="img/interface 2nd section good result.png"/>
 
 #### 3.2.1 What this page is for
 This section is the main body of system for users to get decision support provided by our model. Since users in real life only use model with best accuracy and we assume that users do not have technical background, we put only one model in our system.
