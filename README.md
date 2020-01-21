@@ -45,9 +45,8 @@ The following table shows the best estimator, CV score and accuracy of each mode
 
 The interface includes three sections on the left side of menu bar: About, Start Evaluation and Show Source Code. Main() function will call corresponding function when users choose an action.
 
-![image](img/code logic flow.png)
-![image](img/interface index.png)
-
+<img src="img/code logic flow.png"/>
+<img src="img/interface index.png"/>
 
 
 ```javascript
