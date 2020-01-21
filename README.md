@@ -125,7 +125,7 @@ When result is ‘Bad’, the likelihood of repayment is predicted to be low. A 
 
 ### 3.3 Show Source Code
 
-![image](img/interface 3rd section.png)
+<img src="img/interface 3rd section.png"/>
 
 #### 3.3.1 What this page is for
 
